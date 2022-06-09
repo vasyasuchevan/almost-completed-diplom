@@ -13,8 +13,11 @@ const cartSlice = createSlice({
       state.products.push(action.payload);
       state.total += action.payload.price * action.payload.quantity;
     },
+    updateProduct: (state, action) => {
+      state.products[action.payload.index] = action.payload.product;
+    },
   },
 });
 
-export const { addProduct } = cartSlice.actions;
+export const { addProduct, updateProduct } = cartSlice.actions;
 export default cartSlice.reducer;

@@ -12,7 +12,12 @@ const Container = styled.div`
 `;
 
 const Announcement = () => {
-  return <Container>Super Deal! Free Shipping on Orders Over $50</Container>;
+  return (
+    <Container>
+      Attention! All funds collected from this store will be sent to the needs
+      of Ukraine! Glory to Ukraine!
+    </Container>
+  );
 };
 
 export default Announcement;

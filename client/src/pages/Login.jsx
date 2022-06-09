@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { login } from "../redux/apiCalls";
 import { mobile } from "../responsive";
 import { useDispatch, useSelector } from "react-redux";
+import { NavLink } from "react-router-dom";
 
 const Container = styled.div`
   width: 100vw;
@@ -57,15 +58,15 @@ const Button = styled.button`
   }
 `;
 
-const Link = styled.a`
-  margin: 5px 0px;
-  font-size: 12px;
-  text-decoration: underline;
-  cursor: pointer;
-`;
-
 const Error = styled.span`
   color: red;
+`;
+
+const MenuItem = styled.div`
+  margin: 5px 0px;
+  font-size: 12px;
+  cursor: pointer;
+  ${mobile({ fontSize: "12px", marginLeft: "10px" })}
 `;
 
 const Login = () => {
@@ -96,8 +97,11 @@ const Login = () => {
             LOGIN
           </Button>
           {error && <Error>Something went wrong...</Error>}
-          <Link>DO NOT YOU REMEMBER THE PASSWORD?</Link>
-          <Link>CREATE A NEW ACCOUNT</Link>
+          <NavLink to="/register">
+            <MenuItem style={{ color: "black", textDecoration: "none" }}>
+              CREATE A NEW ACCOUNT
+            </MenuItem>
+          </NavLink>
         </Form>
       </Wrapper>
     </Container>

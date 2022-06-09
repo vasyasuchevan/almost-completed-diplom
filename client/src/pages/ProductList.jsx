@@ -63,11 +63,12 @@ const ProductList = () => {
           <Select name="color" onChange={handleFilters}>
             <Option disabled>Color</Option>
             <Option>white</Option>
+            <Option>orange</Option>
             <Option>black</Option>
-            <Option>red</Option>
+            <Option>olive</Option>
             <Option>blue</Option>
             <Option>yellow</Option>
-            <Option>green</Option>
+            <Option>grey</Option>
           </Select>
           <Select name="size" onChange={handleFilters}>
             <Option disabled>Size</Option>

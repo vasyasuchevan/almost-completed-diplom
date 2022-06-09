@@ -73,6 +73,7 @@ const Desc = styled.p`
 `;
 
 const Button = styled.button`
+  color: black;
   padding: 10px;
   font-size: 20px;
   background-color: transparent;
@@ -103,7 +104,16 @@ const Slider = () => {
             <InfoContainer>
               <Title>{item.title}</Title>
               <Desc>{item.desc}</Desc>
-              <Button>SHOW NOW</Button>
+              <Button>
+                <a
+                  style={{ color: "black", textDecoration: "none" }}
+                  target="_blank"
+                  rel="noreferrer"
+                  href="https://savelife.in.ua/donate/"
+                >
+                  Help Ukraine!
+                </a>
+              </Button>
             </InfoContainer>
           </Slide>
         ))}

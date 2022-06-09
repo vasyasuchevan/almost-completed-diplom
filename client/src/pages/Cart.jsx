@@ -8,7 +8,10 @@ import { mobile } from "../responsive";
 import StripeCheckout from "react-stripe-checkout";
 import { useEffect, useState } from "react";
 import { userRequest } from "../requestMethods";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+
+// import { updateProduct } from "../redux/cartRedux";
+// import { useDispatch } from "react-redux";
 
 const KEY =
   "pk_test_51KxxTQLFQW08DGYvlGHDGdHkcfU00Rws4m2P9OVLs9CKML7u3EzrLawAH3COGRN9pYkIs3FsjjDXrs28PwGcmvWP00jg1CEero";
@@ -162,8 +165,10 @@ const Button = styled.button`
 
 const Cart = () => {
   const cart = useSelector((state) => state.cart);
+  const [currCart, setCurrCart] = useState(cart);
   const [stripeToken, setStripeToken] = useState(null);
   const history = useNavigate();
+  // const dispatch = useDispatch();
 
   const onToken = (token) => {
     setStripeToken(token);
@@ -174,16 +179,33 @@ const Cart = () => {
       try {
         const res = await userRequest.post("/checkout/payment", {
           tokenId: stripeToken.id,
-          amount: 500,
+          amount: 10000,
         });
         history.push("/success", {
           stripeData: res.data,
-          products: cart,
+          products: currCart,
         });
       } catch {}
     };
     stripeToken && makeRequest();
-  }, [stripeToken, cart.total, history]);
+  }, [stripeToken, currCart.total, history]);
+
+  const handleQuantity = (type, index) => {
+    let quantity = currCart.products[index].quantity;
+    if (type === "dec") {
+      quantity = quantity > 1 ? quantity - 1 : quantity;
+    } else {
+      quantity = quantity + 1;
+    }
+    currCart.products[index].quantity = quantity;
+    setCurrCart({ ...currCart });
+    // const actionPayload = {
+    //   index,
+    //   product: currCart.products[index],
+    // };
+    // dispatch(updateProduct(actionPayload));
+  };
+
   return (
     <Container>
       <Navbar />
@@ -191,17 +213,30 @@ const Cart = () => {
       <Wrapper>
         <Title>YOUR BAG</Title>
         <Top>
-          <TopButton>CONTINUE SHOPPING</TopButton>
+          <Link to={`/`}>
+            <TopButton>CONTINUE SHOPPING</TopButton>
+          </Link>
           <TopTexts>
             <TopText>Shopping Bag(2)</TopText>
             <TopText>Your Wishlist (0)</TopText>
           </TopTexts>
-          <TopButton type="filled">CHECKOUT NOW</TopButton>
+          <StripeCheckout
+            name="Essential Shop"
+            image="https://www.pngmart.com/files/7/Pay-PNG-HD.png"
+            billingAddress
+            shippingAddress
+            description={`Your total is $${currCart.total}`}
+            amount={currCart.total * 100}
+            token={onToken}
+            stripeKey={KEY}
+          >
+            <TopButton type="filled">CHECKOUT NOW</TopButton>
+          </StripeCheckout>
         </Top>
         <Bottom>
           <Info>
-            {cart.products.map((product) => (
-              <Product>
+            {currCart.products.map((product, index) => (
+              <Product key={index}>
                 <ProductDetail>
                   <Image src={product.img} />
                   <Details>
@@ -219,9 +254,9 @@ const Cart = () => {
                 </ProductDetail>
                 <PriceDetail>
                   <ProductAmountContainer>
-                    <Add />
+                    <Add onClick={() => handleQuantity("inc", index)} />
                     <ProductAmount>{product.quantity}</ProductAmount>
-                    <Remove />
+                    <Remove onClick={() => handleQuantity("dec", index)} />
                   </ProductAmountContainer>
                   <ProductPrice>
                     $ {product.price * product.quantity}
@@ -235,27 +270,23 @@ const Cart = () => {
             <SummaryTitle>ORDER SUMMARY</SummaryTitle>
             <SummaryItem>
               <SummaryItemText>Subtotal</SummaryItemText>
-              <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
+              <SummaryItemPrice>$ {currCart.total}</SummaryItemPrice>
             </SummaryItem>
             <SummaryItem>
-              <SummaryItemText>Estimated Shipping</SummaryItemText>
-              <SummaryItemPrice>$ 5.90</SummaryItemPrice>
-            </SummaryItem>
-            <SummaryItem>
-              <SummaryItemText>Shipping Discount</SummaryItemText>
-              <SummaryItemPrice>$ -5.90</SummaryItemPrice>
+              <SummaryItemText>Free Shipping</SummaryItemText>
+              <SummaryItemPrice>$ 0.00</SummaryItemPrice>
             </SummaryItem>
             <SummaryItem type="total">
               <SummaryItemText>Total</SummaryItemText>
-              <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
+              <SummaryItemPrice>$ {currCart.total}</SummaryItemPrice>
             </SummaryItem>
             <StripeCheckout
-              name="Lama Shop"
+              name="Essential Shop"
               image="https://avatars.githubusercontent.com/u/1486366?v=4"
               billingAddress
               shippingAddress
-              description={`Your total is $${cart.total}`}
-              amount={cart.total * 100}
+              description={`Your total is $${currCart.total}`}
+              amount={currCart.total * 100}
               token={onToken}
               stripeKey={KEY}
             >

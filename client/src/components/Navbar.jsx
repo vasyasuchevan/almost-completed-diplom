@@ -1,10 +1,10 @@
 import { Badge } from "@material-ui/core";
-import { Search, ShoppingCartOutlined } from "@material-ui/icons";
 import React from "react";
 import styled from "styled-components";
 import { mobile } from "../responsive";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
+import { ShoppingCartOutlined } from "@material-ui/icons";
 
 const Container = styled.div`
   height: 60px;
@@ -31,26 +31,16 @@ const Language = styled.span`
   ${mobile({ display: "none" })}
 `;
 
-const SearchContainer = styled.div`
-  border: 0.5px solid lightgray;
-  display: flex;
-  align-items: center;
-  margin-left: 25px;
-  padding: 5px;
-`;
-
-const Input = styled.input`
-  border: none;
-  ${mobile({ width: "50px" })}
-`;
-
 const Center = styled.div`
   flex: 1;
   text-align: center;
 `;
 
-const Logo = styled.h1`
+const Logo = styled(Link)`
+  font-size: 32px;
   font-weight: bold;
+  color: black;
+  text-decoration: none;
   ${mobile({ fontSize: "24px" })}
 `;
 const Right = styled.div`
@@ -69,30 +59,36 @@ const MenuItem = styled.div`
 `;
 
 const Navbar = () => {
-  const quantity = useSelector(state=>state.cart.quantity)
+  const quantity = useSelector((state) => state.cart.quantity);
   return (
     <Container>
       <Wrapper>
         <Left>
-          <Language>EN</Language>
-          <SearchContainer>
-            <Input placeholder="Search" />
-            <Search style={{ color: "gray", fontSize: 16 }} />
-          </SearchContainer>
+          <Language>We're glad to welcome you!</Language>
         </Left>
         <Center>
-          <Logo>LAMA.</Logo>
+          <Logo to={`/`}>ESSENTIAL.</Logo>
         </Center>
         <Right>
-          <MenuItem>REGISTER</MenuItem>
-          <MenuItem>SIGN IN</MenuItem>
-          <Link to="/cart">
-          <MenuItem>
-            <Badge badgeContent={quantity} color="primary">
-              <ShoppingCartOutlined />
-            </Badge>
-          </MenuItem>
-          </Link>
+          <NavLink to="/register">
+            <MenuItem style={{ color: "black", textDecoration: "none" }}>
+              REGISTER
+            </MenuItem>
+          </NavLink>
+
+          <NavLink to="/login">
+            <MenuItem style={{ color: "black", textDecoration: "none" }}>
+              SIGN IN
+            </MenuItem>
+          </NavLink>
+
+          <NavLink to="/cart">
+            <MenuItem style={{ color: "black", textDecoration: "none" }}>
+              <Badge badgeContent={quantity} color="primary">
+                <ShoppingCartOutlined />
+              </Badge>
+            </MenuItem>
+          </NavLink>
         </Right>
       </Wrapper>
     </Container>
